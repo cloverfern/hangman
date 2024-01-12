@@ -16,7 +16,7 @@ defmodule Hangman do
   def new_game do
   end
 
-  @spec make_move(game, String.t) :: {game, tally}
+  @spec make_move(any(), any()) :: nil
   def make_move(_game, _guess) do
   end
 
