@@ -3,7 +3,9 @@ defmodule Hangman do
 
   """
 
-  @type game :: any
+  alias Hangman.Impl.Game
+
+  @opaque game :: Game.t
   @type state :: :initializing | :won | :lost | :good_guess | :bad_guess | :already_used
   @type tally :: %{
     turns_left: integer,
@@ -13,8 +15,7 @@ defmodule Hangman do
   }
 
   @spec new_game() :: game
-  def new_game do
-  end
+  defdelegate new_game, to: Game
 
   @spec make_move(any(), any()) :: nil
   def make_move(_game, _guess) do

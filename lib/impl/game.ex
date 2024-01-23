@@ -3,6 +3,13 @@ defmodule Hangman.Impl.Game do
 
   """
 
+  @type t :: %__MODULE__{
+    game_state: Hangman.state,
+    letters: list(String.t),
+    turns_left: integer(),
+    used: MapSet.t(String.t),
+  }
+
   defstruct(
     turns_left: 7,
     game_state: :initializing,
@@ -10,14 +17,9 @@ defmodule Hangman.Impl.Game do
     used: MapSet.new()
   )
 
-  @spec new_game() :: %Hangman.Impl.Game{
-          game_state: :initializing,
-          letters: [String.codepoint],
-          turns_left: 7,
-          used: MapSet.t()
-        }
+  @spec new_game() :: t
   def new_game do
-    %Hangman.Impl.Game{
+    %__MODULE__{
       letters: String.codepoints(Dictionary.random_word())
     }
   end
