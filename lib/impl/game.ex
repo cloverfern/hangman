@@ -25,7 +25,7 @@ defmodule Hangman.Impl.Game do
   @spec new_game(String.t) :: t
   def new_game(word) do
     %__MODULE__{
-      letters: String.codepoints(word)
+      letters: word |> String.downcase() |> String.codepoints()
     }
   end
 
