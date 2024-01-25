@@ -3,8 +3,10 @@ defmodule Hangman.Impl.Game do
 
   """
 
+  alias Hangman.Type
+
   @type t :: %__MODULE__{
-    game_state: Hangman.state,
+    game_state: Type.state,
     letters: list(String.t),
     turns_left: integer(),
     used: MapSet.t(String.t),
