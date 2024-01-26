@@ -9,7 +9,9 @@ defmodule HangmanImplGameTest do
     assert game.turns_left == 7
     assert game.game_state == :initializing
     assert game.letters == ["w", "o", "m", "b", "a", "t"]
-    assert Enum.all?(game.letters, fn letter -> letter >= "a" and letter <= "z" end)
+
+    is_lowercase_a_to_z = fn letter -> letter >= "a" and letter <= "z" end
+    assert Enum.all?(game.letters, is_lowercase_a_to_z)
   end
 
   test "state doesn't change if game is won or lost" do
