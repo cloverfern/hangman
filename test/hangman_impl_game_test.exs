@@ -40,10 +40,10 @@ defmodule HangmanImplGameTest do
   test "letters are correctly recorded" do
     game = Game.new_game()
     { game, _ } = Game.make_move(game, "a")
-    assert MapSet.member?(game.used, "a") == true
-
     { game, _ } = Game.make_move(game, "b")
-    assert MapSet.member?(game.used, "b") == true
+    { game, _ } = Game.make_move(game, "a")
+
+    assert MapSet.equal?(game.used, MapSet.new(["a", "b"]))
 
   end
 end
