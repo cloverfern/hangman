@@ -48,7 +48,16 @@ defmodule Hangman.Impl.Game do
   end
 
   defp accept_guess(game, guess,  _already_used) do
-    %{ game | used: MapSet.put(game.used, guess) }
+    game = %{ game | used: MapSet.put(game.used, guess) }
+    score_guess(
+      game,
+      Enum.member?(game.letters, guess),
+      Enum.all?(game.letters, fn x -> MapSet.member?(game.used, x) end)
+    )
+  end
+
+  defp return_with_tally(game) do
+    { game, tally(game) }
   end
 
   defp tally(game) do
@@ -60,8 +69,22 @@ defmodule Hangman.Impl.Game do
     }
   end
 
-  defp return_with_tally(game) do
-    { game, tally(game) }
+
+  defp score_guess(game, _is_member=true, _all_guessed=true) do
+    %{ game | game_state: :won }
+  end
+
+  defp score_guess(game, _is_member=false, _all_guessed=false)
+  when game.turns_left <= 1 do
+    %{ game | game_state: :lost, turns_left: game.turns_left - 1 }
+  end
+
+  defp score_guess(game, _is_member=true, _all_guessed=false) do
+    %{ game | game_state: :good_guess }
+  end
+
+  defp score_guess(game, _is_member=false, _all_guessed=false) do
+    %{ game | game_state: :wrong_guess, turns_left: game.turns_left - 1 }
   end
 
 end
