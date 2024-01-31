@@ -49,11 +49,33 @@ defmodule Hangman.Impl.Game do
 
   defp accept_guess(game, guess,  _already_used) do
     game = %{ game | used: MapSet.put(game.used, guess) }
-    score_guess(
-      game,
-      Enum.member?(game.letters, guess),
-      Enum.all?(game.letters, fn x -> MapSet.member?(game.used, x) end)
-    )
+    score_guess(game, is_good_guess?(game, guess), is_game_won?(game))
+  end
+
+  defp is_good_guess?(game, guess) do
+    Enum.member?(game.letters, guess)
+  end
+
+  defp is_game_won?(game) do
+      MapSet.subset?(MapSet.new(game.letters), game.used)
+  end
+
+  defp score_guess(game, _good_guess=true, _game_won=false) do
+    %{ game | game_state: :good_guess }
+  end
+
+  defp score_guess(game, _good_guess=false, _game_won=false)
+  when game.turns_left > 1 do
+    %{ game | game_state: :wrong_guess, turns_left: game.turns_left - 1 }
+  end
+
+  defp score_guess(game, _good_guess=true, _game_won=true) do
+    %{ game | game_state: :won }
+  end
+
+  defp score_guess(game, _good_guess=false, _game_won=false)
+  when game.turns_left <= 1 do
+    %{ game | game_state: :lost, turns_left: game.turns_left - 1 }
   end
 
   defp return_with_tally(game) do
@@ -67,24 +89,6 @@ defmodule Hangman.Impl.Game do
       letters: [],
       used: game.used |> MapSet.to_list() |> Enum.sort(),
     }
-  end
-
-
-  defp score_guess(game, _is_member=true, _all_guessed=true) do
-    %{ game | game_state: :won }
-  end
-
-  defp score_guess(game, _is_member=false, _all_guessed=false)
-  when game.turns_left <= 1 do
-    %{ game | game_state: :lost, turns_left: game.turns_left - 1 }
-  end
-
-  defp score_guess(game, _is_member=true, _all_guessed=false) do
-    %{ game | game_state: :good_guess }
-  end
-
-  defp score_guess(game, _is_member=false, _all_guessed=false) do
-    %{ game | game_state: :wrong_guess, turns_left: game.turns_left - 1 }
   end
 
 end
