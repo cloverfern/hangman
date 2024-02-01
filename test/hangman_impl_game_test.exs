@@ -54,13 +54,13 @@ defmodule HangmanImplGameTest do
     assert tally.game_state == :good_guess
   end
 
-  test "a wrong guess is reported" do
+  test "a bad guess is reported" do
     game = Game.new_game("wombat")
     { game, tally } = Game.make_move(game, "x")
-    assert tally.game_state == :wrong_guess
+    assert tally.game_state == :bad_guess
     assert tally.turns_left == 6
     { _game, tally } = Game.make_move(game, "z")
-    assert tally.game_state == :wrong_guess
+    assert tally.game_state == :bad_guess
     assert tally.turns_left == 5
   end
 
@@ -77,19 +77,24 @@ defmodule HangmanImplGameTest do
   test "a defeat is reported" do
     game = Game.new_game("lost")
     { game, tally } = Game.make_move(game, "1")
-    assert tally.game_state == :wrong_guess
+    assert tally.game_state == :bad_guess
     { game, tally } = Game.make_move(game, "2")
-    assert tally.game_state == :wrong_guess
+    assert tally.game_state == :bad_guess
     { game, tally } = Game.make_move(game, "3")
-    assert tally.game_state == :wrong_guess
+    assert tally.game_state == :bad_guess
     { game, tally } = Game.make_move(game, "4")
-    assert tally.game_state == :wrong_guess
+    assert tally.game_state == :bad_guess
     { game, tally } = Game.make_move(game, "5")
-    assert tally.game_state == :wrong_guess
+    assert tally.game_state == :bad_guess
     { game, tally } = Game.make_move(game, "6")
-    assert tally.game_state == :wrong_guess
+    assert tally.game_state == :bad_guess
     { _game, tally } = Game.make_move(game, "7")
     assert tally.game_state == :lost
   end
+
+  [
+    ["a", :bad_guess, 6, ["_", "_", "_", "_", "_"], ["a"]],
+    ["e", :bad_guess, 6, ["_", "_", "_", "_", "_"], ["a"]],
+  ]
 
 end

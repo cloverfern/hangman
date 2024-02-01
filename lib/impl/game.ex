@@ -60,22 +60,20 @@ defmodule Hangman.Impl.Game do
       MapSet.subset?(MapSet.new(game.letters), game.used)
   end
 
-  defp score_guess(game, _good_guess=true, _game_won=false) do
-    %{ game | game_state: :good_guess }
-  end
-
-  defp score_guess(game, _good_guess=false, _game_won=false)
-  when game.turns_left > 1 do
-    %{ game | game_state: :wrong_guess, turns_left: game.turns_left - 1 }
-  end
-
   defp score_guess(game, _good_guess=true, _game_won=true) do
     %{ game | game_state: :won }
   end
 
-  defp score_guess(game, _good_guess=false, _game_won=false)
-  when game.turns_left <= 1 do
-    %{ game | game_state: :lost, turns_left: game.turns_left - 1 }
+  defp score_guess(game = %{turns_left: 1}, _good_guess=false, _game_won=false) do
+    %{ game | game_state: :lost, turns_left: 0 }
+  end
+
+  defp score_guess(game, _good_guess=true, _game_won=false) do
+    %{ game | game_state: :good_guess }
+  end
+
+  defp score_guess(game, _good_guess=false, _game_won=false) do
+    %{ game | game_state: :bad_guess, turns_left: game.turns_left - 1 }
   end
 
   defp return_with_tally(game) do
