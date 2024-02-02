@@ -92,9 +92,33 @@ defmodule HangmanImplGameTest do
     assert tally.game_state == :lost
   end
 
-  [
+  test "play through a winning game" do
+  turns = [
     ["a", :bad_guess, 6, ["_", "_", "_", "_", "_"], ["a"]],
-    ["e", :bad_guess, 6, ["_", "_", "_", "_", "_"], ["a"]],
+    ["e", :good_guess, 6, ["_", "e", "_", "_", "_"], ["a", "e"]],
+    ["e", :already_used, 6, ["_", "e", "_", "_", "_"], ["a", "e"]],
+    ["l", :good_guess, 6, ["_", "e", "l", "l", "_"], ["a", "e", "l"]],
+    ["h", :good_guess, 6, ["h", "e", "l", "l", "_"], ["a", "e", "l", "h"]],
+    ["o", :won, 6, ["h", "e", "l", "l", "o"], ["a", "e", "l", "h", "o"]],
   ]
+
+  test_sequence_of_moves(turns)
+  end
+
+  defp test_sequence_of_moves(script) do
+    game = Game.new_game("hello")
+
+    Enum.reduce(script, game, &check_one_move/2)
+  end
+
+  defp check_one_move([guess, state, turns_left, letters, used], game) do
+    {game, tally} = Game.make_move(game, guess)
+
+    IO.inspect(tally)
+    assert tally.game_state == state
+    assert tally.turns_left == turns_left
+    assert tally.letters == letters
+    assert tally.used == used
+  end
 
 end
