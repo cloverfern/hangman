@@ -98,8 +98,8 @@ defmodule HangmanImplGameTest do
     ["e", :good_guess, 6, ["_", "e", "_", "_", "_"], ["a", "e"]],
     ["e", :already_used, 6, ["_", "e", "_", "_", "_"], ["a", "e"]],
     ["l", :good_guess, 6, ["_", "e", "l", "l", "_"], ["a", "e", "l"]],
-    ["h", :good_guess, 6, ["h", "e", "l", "l", "_"], ["a", "e", "l", "h"]],
-    ["o", :won, 6, ["h", "e", "l", "l", "o"], ["a", "e", "l", "h", "o"]],
+    ["h", :good_guess, 6, ["h", "e", "l", "l", "_"], ["a", "e", "h", "l"]],
+    ["o", :won, 6, ["h", "e", "l", "l", "o"], ["a", "e", "h", "l", "o"]],
   ]
 
   test_sequence_of_moves(turns)
@@ -119,6 +119,8 @@ defmodule HangmanImplGameTest do
     assert tally.turns_left == turns_left
     assert tally.letters == letters
     assert tally.used == used
+
+    game
   end
 
 end
