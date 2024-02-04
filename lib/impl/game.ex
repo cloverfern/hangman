@@ -84,25 +84,19 @@ defmodule Hangman.Impl.Game do
     %{
       turns_left: game.turns_left,
       game_state: game.game_state,
-      letters: tally_letters(game.letters, game.used),
+      letters: reveal_guessed_letters(game),
       used: game.used |> MapSet.to_list() |> Enum.sort(),
     }
   end
 
-  defp tally_letters([], _used) do
-    []
+  defp reveal_guessed_letters(game) do
+    Enum.map(
+      game.letters,
+      fn letter -> reveal_letter?(letter, MapSet.member?(game.used, letter)) end
+      )
   end
 
-  defp tally_letters([letter | tail], used) do
-    [used_letter?(letter, MapSet.member?(used, letter)) | tally_letters(tail, used)]
-  end
-
-  defp used_letter?(letter, _used=true) do
-    letter
-  end
-
-  defp used_letter?(_letter, _not_used) do
-    "_"
-  end
+  defp reveal_letter?(letter, _reveal=true), do: letter
+  defp reveal_letter?(_letter, _do_not_reveal), do: "_"
 
 end
