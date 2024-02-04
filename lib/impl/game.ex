@@ -31,7 +31,7 @@ defmodule Hangman.Impl.Game do
     }
   end
 
-  @spec make_move(t, String.t) :: { t, Type.tally }
+  @spec make_move(t, String.t) :: {t, Type.tally}
   def make_move(game = %{game_state: state}, _guess)
   when state in [:won, :lost] do
     return_with_tally(game)
@@ -44,11 +44,11 @@ defmodule Hangman.Impl.Game do
   end
 
   defp accept_guess(game, _guess, _already_used=true) do
-    %{ game | game_state: :already_used }
+    %{game | game_state: :already_used}
   end
 
   defp accept_guess(game, guess,  _new_move) do
-    game = %{ game | used: MapSet.put(game.used, guess) }
+    game = %{game | used: MapSet.put(game.used, guess)}
     score_guess(game, is_good_guess?(game, guess), is_game_won?(game))
   end
 
@@ -61,23 +61,24 @@ defmodule Hangman.Impl.Game do
   end
 
   defp score_guess(game, _good_guess=true, _game_won=true) do
-    %{ game | game_state: :won }
+    %{game | game_state: :won}
   end
 
   defp score_guess(game = %{turns_left: 1}, _good_guess=false, _game_won=false) do
-    %{ game | game_state: :lost, turns_left: 0 }
+    %{game | game_state: :lost, turns_left: 0}
   end
 
   defp score_guess(game, _good_guess=true, _game_won=false) do
-    %{ game | game_state: :good_guess }
+    %{game | game_state: :good_guess}
   end
 
-  defp score_guess(game, _good_guess=false, _game_won=false) do
-    %{ game | game_state: :bad_guess, turns_left: game.turns_left - 1 }
+  defp score_guess(game = %{turns_left: turns_left}, _good_guess=false, _game_won=false)
+    when turns_left > 1 do
+    %{game | game_state: :bad_guess, turns_left: game.turns_left - 1}
   end
 
   defp return_with_tally(game) do
-    { game, tally(game) }
+    {game, tally(game)}
   end
 
   defp tally(game) do
