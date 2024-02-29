@@ -39,17 +39,30 @@ defmodule Hangman.Impl.Game do
 
   def make_move(game, guess) do
     game
-    |> accept_guess(guess, MapSet.member?(game.used, guess))
+    |> accept_guess(guess, MapSet.member?(game.used, guess), is_lowercase_a_to_z?(guess))
     |> return_with_tally()
   end
 
-  defp accept_guess(game, _guess, _already_used=true) do
+  defp accept_guess(game, _guess, _already_used=true, _valid_guess) do
     %{game | game_state: :already_used}
   end
 
-  defp accept_guess(game, guess,  _new_move) do
+  defp accept_guess(game, _guess, _new_move, _is_valid_guess=false) do
+    %{game | game_state: :invalid_guess}
+  end
+
+  defp accept_guess(game, guess,  _new_move, _valid_guess) do
     game = %{game | used: MapSet.put(game.used, guess)}
     score_guess(game, is_good_guess?(game, guess), is_game_won?(game))
+  end
+
+  defp is_lowercase_a_to_z?(char)
+  when is_binary(char) and byte_size(char) == 1 do
+    :binary.at(char, 0) in 97..122
+  end
+
+  defp is_lowercase_a_to_z?(_) do
+    false
   end
 
   defp is_good_guess?(game, guess) do

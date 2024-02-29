@@ -37,6 +37,18 @@ defmodule HangmanImplGameTest do
     assert game.game_state == :already_used
   end
 
+  test "an invalid guess is reported" do
+    game = Game.new_game()
+    { game, _ } = Game.make_move(game, "abc")
+    assert game.game_state == :invalid_guess
+
+    { game, _ } = Game.make_move(game, "B")
+    assert game.game_state == :invalid_guess
+
+    { game, _ } = Game.make_move(game, "3")
+    assert game.game_state == :invalid_guess
+  end
+
   test "letters are correctly recorded" do
     game = Game.new_game()
     { game, _ } = Game.make_move(game, "a")
