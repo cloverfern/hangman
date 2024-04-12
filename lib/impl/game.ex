@@ -94,6 +94,15 @@ defmodule Hangman.Impl.Game do
     {game, tally(game)}
   end
 
+  def tally(game=%{game_state: :lost}) do
+    %{
+      turns_left: game.turns_left,
+      game_state: game.game_state,
+      letters: game.letters,
+      used: game.used |> MapSet.to_list() |> Enum.sort(),
+    }
+  end
+    
   def tally(game) do
     %{
       turns_left: game.turns_left,
